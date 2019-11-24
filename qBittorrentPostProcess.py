@@ -90,7 +90,7 @@ if settings.qBittorrent['convert']:
         settings.output_dir = os.path.abspath(os.path.join(settings.output_dir, name))
         log.debug("Moving output_dir to separate folder %s." % settings.output_dir)
         if not os.path.exists(settings.output_dir):
-        os.mkdir(settings.output_dir)
+            os.mkdir(settings.output_dir)
         # Drik added 2 stop
 
     # Perform conversion.
