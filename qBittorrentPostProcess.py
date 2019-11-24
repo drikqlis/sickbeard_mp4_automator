@@ -4,6 +4,10 @@ import os
 import re
 import sys
 import shutil
+# Drik added 1 start
+import hashlib
+import struct
+# Drik added 1 end
 from autoprocess import autoProcessTV, autoProcessMovie, autoProcessTVSR, sonarr, radarr
 from readSettings import ReadSettings
 from mkvtomp4 import MkvtoMp4
@@ -81,6 +85,11 @@ if settings.qBittorrent['convert']:
     if settings.qBittorrent['output_dir']:
         settings.output_dir = settings.qBittorrent['output_dir']
         log.debug("Overriding output_dir to %s." % settings.qBittorrent['output_dir'])
+        # Drik added 2 start
+		# Setting output folder to separate sub folder
+        settings.output_dir = os.path.abspath(os.path.join(settings.output_dir, name))
+        log.debug("Moving output_dir to separate folder %s." % settings.output_dir)
+        # Drik added 2 stop
 
     # Perform conversion.
     log.info("Performing conversion")
@@ -93,10 +102,65 @@ if settings.qBittorrent['convert']:
             os.mkdir(settings.output_dir)
 
     converter = MkvtoMp4(settings)
+    # Drik added 3 start
+	# Function for generating napiprojekt hash and saving it to filename.napihash file
+    def hash_napiprojekt(video_path):
+        readsize = 1024 * 1024 * 10
+        with open(video_path, 'rb') as f:
+            data = f.read(readsize)
+        hash = hashlib.md5(data).hexdigest()
+        filename=os.path.splitext(os.path.basename(video_path))[0]
+        dirpath=os.path.dirname(video_path)
+        filepath2 = os.path.abspath(os.path.join(settings.output_dir, filename + '.napihash'))
+        file = open(filepath2, "w")
+        file.write(hash)
+        file.close()
+        log.debug("Saved .napihash file in %s." % filepath2)
+        return hash
+	# Function for generating opensubtitles hash and saving to filename.openhash file
+    def hash_opensubtitles(video_path):
+        bytesize = struct.calcsize(b'<q')
+        with open(video_path, 'rb') as f:
+            filesize = os.path.getsize(video_path)
+            filehash = filesize
+            if filesize < 65536 * 2:
+                return
+            for _ in range(65536 // bytesize):
+                filebuffer = f.read(bytesize)
+                (l_value,) = struct.unpack(b'<q', filebuffer)
+                filehash += l_value
+                filehash &= 0xFFFFFFFFFFFFFFFF  # to remain as 64bit number
+            f.seek(max(0, filesize - 65536), 0)
+            for _ in range(65536 // bytesize):
+                filebuffer = f.read(bytesize)
+                (l_value,) = struct.unpack(b'<q', filebuffer)
+                filehash += l_value
+                filehash &= 0xFFFFFFFFFFFFFFFF
+        returnedhash = '%016x' % filehash
+        filename=os.path.splitext(os.path.basename(video_path))[0]
+        dirpath=os.path.dirname(video_path)
+        filepath2 = os.path.abspath(os.path.join(settings.output_dir, filename + '.openhash'))
+        file = open(filepath2, "w")
+        file.write(returnedhash)
+        file.close()
+        log.debug("Saved .openhash file in w %s." % filepath2)
+        return returnedhash
+    # Drik added 3 stop
 
     if single_file:
         # single file
         inputfile = content_path
+        # Drik added 4 start
+		# Generate hash files
+        try:
+            hash_napi_str = hash_napiprojekt(inputfile)
+        except MemoryError:
+            log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)		
+        try:
+            hash_open_str = hash_opensubtitles(inputfile)
+        except MemoryError:
+            log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)	
+        # Drik added 4 stop
         if MkvtoMp4(settings).validSource(inputfile):
             log.info("Processing file %s." % inputfile)
             try:
@@ -111,6 +175,16 @@ if settings.qBittorrent['convert']:
         for r, d, f in os.walk(root_path):
             for files in f:
                 inputfile = os.path.join(r, files)
+                # Drik added 5 start
+                try:
+                    hash_napi_str = hash_napiprojekt(inputfile)
+                except MemoryError:
+                    log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
+                try:
+                    hash_open_str = hash_opensubtitles(inputfile)
+                except MemoryError:
+                    log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
+                # Drik added 5 stop
                 if MkvtoMp4(settings).validSource(inputfile) and inputfile not in ignore:
                     log.info("Processing file %s." % inputfile)
                     try:
