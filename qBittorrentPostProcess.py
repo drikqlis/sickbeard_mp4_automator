@@ -177,12 +177,12 @@ if settings.qBittorrent['convert']:
                 inputfile = os.path.join(r, files)
                 # Drik added 5 start
                 try:
-                    if (inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"))
+                    if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
                         hash_napi_str = hash_napiprojekt(inputfile)
                 except MemoryError:
                     log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
                 try:
-                    if (inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"))
+                    if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
                         hash_open_str = hash_opensubtitles(inputfile)
                 except MemoryError:
                     log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
