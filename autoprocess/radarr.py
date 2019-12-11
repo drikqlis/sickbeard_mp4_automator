@@ -3,7 +3,7 @@ import os
 import logging
 
 
-def processMovie(dirName, settings, nzbGet=False, logger=None):
+def processMovie(dirName, settings, torrent_hash, nzbGet=False, logger=None):
 
     if nzbGet:
         errorprefix = "[ERROR] "
@@ -47,7 +47,7 @@ def processMovie(dirName, settings, nzbGet=False, logger=None):
 
     webroot = settings.Radarr['web_root']
     url = protocol + host + ":" +  port + webroot + "/api/command"
-    payload = {'name': 'DownloadedMoviesScan', 'path': dirName}
+    payload = {'name': 'DownloadedMoviesScan', 'path': dirName, 'downloadClientId': torrent_hash.upper()}
     headers = {'X-Api-Key': apikey}
 
     log.debug("Radarr host: %s." % host)

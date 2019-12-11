@@ -1,6 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\autoprocess"
   ],
+  "SelectedNode": "\\autoprocess\\radarr.py",
   "PreviewInSolutionExplorer": false
 }

@@ -238,10 +238,10 @@ elif label == categories[1]:
     autoProcessTV.processEpisode(path, settings)
 elif label == categories[2]:
     log.info("Passing %s directory to Sonarr." % path)
-    sonarr.processEpisode(path, settings)
+    sonarr.processEpisode(path, settings, torrent_hash)
 elif label == categories[3]:
     log.info("Passing %s directory to Radarr." % path)
-    radarr.processMovie(path, settings)
+    radarr.processMovie(path, settings, torrent_hash)
 elif label == categories[4]:
     log.info("Passing %s directory to Sickrage." % path)
     autoProcessTVSR.processEpisode(path, settings)

@@ -3,7 +3,7 @@ import os
 import logging
 
 
-def processEpisode(dirName, settings, nzbGet=False, logger=None):
+def processEpisode(dirName, settings, torrent_hash, nzbGet=False, logger=None):
 
     if nzbGet:
         errorprefix = "[ERROR] "
@@ -47,7 +47,7 @@ def processEpisode(dirName, settings, nzbGet=False, logger=None):
 
     webroot = settings.Sonarr['web_root']
     url = protocol + host + ":" + port + webroot + "/api/command"
-    payload = {'name': 'downloadedepisodesscan', 'path': dirName}
+    payload = {'name': 'downloadedepisodesscan', 'path': dirName, 'downloadClientId': torrent_hash.upper()}
     headers = {'X-Api-Key': apikey}
 
     log.debug("Sonarr host: %s." % host)
