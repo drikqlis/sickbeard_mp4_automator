@@ -2,8 +2,9 @@ import sys
 import os
 import logging
 
-
+# Drik modified 1 start
 def processMovie(dirName, settings, torrent_hash, nzbGet=False, logger=None):
+# Drik modified 1 end
 
     if nzbGet:
         errorprefix = "[ERROR] "
@@ -47,7 +48,9 @@ def processMovie(dirName, settings, torrent_hash, nzbGet=False, logger=None):
 
     webroot = settings.Radarr['web_root']
     url = protocol + host + ":" +  port + webroot + "/api/command"
+	# Drik modified 2 start
     payload = {'name': 'DownloadedMoviesScan', 'path': dirName, 'downloadClientId': torrent_hash.upper()}
+	# Drik modified 2 end
     headers = {'X-Api-Key': apikey}
 
     log.debug("Radarr host: %s." % host)
