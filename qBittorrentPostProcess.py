@@ -45,15 +45,18 @@ torrent_hash = sys.argv[6]
 categories = [settings.qBittorrent['cp'], settings.qBittorrent['sb'], settings.qBittorrent['sonarr'], settings.qBittorrent['radarr'], settings.qBittorrent['sr'], settings.qBittorrent['bypass']]
 
 log.debug("Root Path: %s." % root_path)
+log.debug("Content Path: %s." % content_path)
 log.debug("Label: %s." % label)
 log.debug("Categories: %s." % categories)
 log.debug("Torrent hash: %s." % torrent_hash)
 log.debug("Torrent name: %s." % name)
 
-if root_path == content_path:
-    single_file = False
-else:
+# Drik modified 1 start
+if os.path.isfile(content_path):
     single_file = True
+else:
+    single_file = False
+# Drik modified 1 start
 
 if label not in categories:
     log.error("No valid label detected.")
