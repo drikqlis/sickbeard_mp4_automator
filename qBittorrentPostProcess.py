@@ -146,7 +146,7 @@ if settings.qBittorrent['convert']:
         dirpath=os.path.dirname(video_path)
         filepath2 = os.path.abspath(os.path.join(settings.output_dir, filename + '.openhash'))
         file = open(filepath2, "w")
-        file.write(returnedhash)
+        file.write(returnedhash + ";" + filesize)
         file.close()
         log.debug("Saved .openhash file in w %s." % filepath2)
         return returnedhash
