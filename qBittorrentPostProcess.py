@@ -176,6 +176,7 @@ if settings.qBittorrent['convert']:
                 settings.output_dir = settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
                 if not os.path.exists(settings.output_dir):
                     os.makedirs(settings.output_dir)
+                converter = MkvtoMp4(settings)
                 output = converter.process(inputfile, reportProgress=True)
             except:
                 log.exception("Error converting file %s." % inputfile)
@@ -206,6 +207,7 @@ if settings.qBittorrent['convert']:
                         settings.output_dir = settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
                         if not os.path.exists(settings.output_dir):
                             os.makedirs(settings.output_dir)
+                        converter = MkvtoMp4(settings)
                         output = converter.process(inputfile)
                         if output is not False:
                             ignore.append(output['output'])
