@@ -78,10 +78,13 @@ delete_dir = False
 qb = Client(settings.qBittorrent['host'])
 qb.login(settings.qBittorrent['username'], settings.qBittorrent['password'])
 
-if settings.qBittorrent['actionBefore']:
-    if settings.qBittorrent['actionBefore'] == 'pause':  # currently only support pausing
-        log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionBefore'])
-        qb.pause(torrent_hash)
+try:
+    if settings.qBittorrent['actionBefore']:
+        if settings.qBittorrent['actionBefore'] == 'pause':  # currently only support pausing
+            log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionBefore'])
+            qb.pause(torrent_hash)
+except:
+    log.exception("Failed to send qBittorrent before action.")
 
 if settings.qBittorrent['convert']:
     # Check for custom qBittorrent output_dir
