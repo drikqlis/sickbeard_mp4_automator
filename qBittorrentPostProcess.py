@@ -174,7 +174,8 @@ if settings.qBittorrent['convert']:
             try:
                 settings.output_dir = os.path.dirname(os.path.abspath(inputfile))
                 settings.output_dir = settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
-                os.makedirs(settings.output_dir)
+                if not os.path.exists(settings.output_dir):
+                    os.makedirs(settings.output_dir)
                 output = converter.process(inputfile, reportProgress=True)
             except:
                 log.exception("Error converting file %s." % inputfile)
@@ -203,7 +204,8 @@ if settings.qBittorrent['convert']:
                     try:
                         settings.output_dir = os.path.dirname(os.path.abspath(inputfile))
                         settings.output_dir = settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
-                        os.makedirs(settings.output_dir)
+                        if not os.path.exists(settings.output_dir):
+                            os.makedirs(settings.output_dir)
                         output = converter.process(inputfile)
                         if output is not False:
                             ignore.append(output['output'])
