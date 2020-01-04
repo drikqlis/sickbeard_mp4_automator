@@ -251,20 +251,25 @@ elif label == categories[4]:
 elif label == categories[5]:
     log.info("Bypassing any further processing as per category.")
 
+# Drik mod
 # Run a qbittorrent action after conversion.
-if settings.qBittorrent['actionAfter']:
-    # currently only support resuming or deleting torrent
-    if settings.qBittorrent['actionAfter'] == 'resume':
-        log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionAfter'])
-        qb.resume(torrent_hash)
-    elif settings.qBittorrent['actionAfter'] == 'delete':
-        # this will delete the torrent from qBittorrent but it WILL NOT delete the data
-        log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionAfter'])
-        qb.delete(torrent_hash)
-    elif settings.qBittorrent['actionAfter'] == 'deletedata':
-        # this will delete the torrent from qBittorrent and delete data
-        log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionAfter'])
-        qb.delete_permanently(torrent_hash)
+try:
+    if settings.qBittorrent['actionAfter']:
+        # currently only support resuming or deleting torrent
+        if settings.qBittorrent['actionAfter'] == 'resume':
+            log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionAfter'])
+            qb.resume(torrent_hash)
+        elif settings.qBittorrent['actionAfter'] == 'delete':
+            # this will delete the torrent from qBittorrent but it WILL NOT delete the data
+            log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionAfter'])
+            qb.delete(torrent_hash)
+        elif settings.qBittorrent['actionAfter'] == 'deletedata':
+            # this will delete the torrent from qBittorrent and delete data
+            log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionAfter'])
+            qb.delete_permanently(torrent_hash)
+except:
+    log.exception("Failed to send qBittorrent after action.")
+# Drik mod
 
 if delete_dir:
     if os.path.exists(delete_dir):
