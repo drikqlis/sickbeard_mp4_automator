@@ -162,16 +162,19 @@ if settings.qBittorrent['convert']:
 		# Generate hash files
         try:
             hash_napi_str = hash_napiprojekt(inputfile)
-        except MemoryError:
+        except:
             log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)		
         try:
             hash_open_str = hash_opensubtitles(inputfile)
-        except MemoryError:
+        except:
             log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)	
         # Drik added 4 stop
         if MkvtoMp4(settings).validSource(inputfile):
             log.info("Processing file %s." % inputfile)
             try:
+                settings.output_dir = os.path.dirname(os.path.abspath(inputfile))
+                settings.output_dir = settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
+                os.makedirs(settings.output_dir)
                 output = converter.process(inputfile, reportProgress=True)
             except:
                 log.exception("Error converting file %s." % inputfile)
@@ -187,17 +190,20 @@ if settings.qBittorrent['convert']:
                 try:
                     if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
                         hash_napi_str = hash_napiprojekt(inputfile)
-                except MemoryError:
+                except:
                     log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
                 try:
                     if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
                         hash_open_str = hash_opensubtitles(inputfile)
-                except MemoryError:
+                except:
                     log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
                 # Drik added 5 stop
                 if MkvtoMp4(settings).validSource(inputfile) and inputfile not in ignore:
                     log.info("Processing file %s." % inputfile)
                     try:
+                        settings.output_dir = os.path.dirname(os.path.abspath(inputfile))
+                        settings.output_dir = settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
+                        os.makedirs(settings.output_dir)
                         output = converter.process(inputfile)
                         if output is not False:
                             ignore.append(output['output'])

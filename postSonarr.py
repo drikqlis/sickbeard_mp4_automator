@@ -32,6 +32,11 @@ log = logging.getLogger("SonarrPostConversion")
 log.info("Sonarr extra script post processing started.")
 
 settings = ReadSettings(os.path.dirname(sys.argv[0]), "autoProcess.ini")
+# Drik add
+# Override force conversion so it won't fire up twice.
+settings.convert-mp4 = False
+settings.force-convert = False
+# Drik add
 
 inputfile = os.environ.get('sonarr_episodefile_path')
 original = os.environ.get('sonarr_episodefile_scenename')
