@@ -159,5 +159,4 @@ if MkvtoMp4(settings).validSource(inputfile):
             post_processor.setTV(tvdb_id, season, episode)
             post_processor.run_scripts()
 
-        plex.refreshPlex(settings, 'show', log)
 sys.exit(0)

@@ -149,5 +149,4 @@ if MkvtoMp4(settings).validSource(inputfile):
             post_processor.setMovie(imdbid)
             post_processor.run_scripts()
 
-        plex.refreshPlex(settings, 'movie', log)
 sys.exit(0)
