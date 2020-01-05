@@ -95,6 +95,7 @@ if settings.qBittorrent['convert']:
 		# Setting output folder to separate sub folder
         settings.output_dir = os.path.abspath(os.path.join(settings.output_dir, name))
         log.debug("Moving output_dir to separate folder %s." % settings.output_dir)
+        download_folder = settings.output_dir
         if not os.path.exists(settings.output_dir):
             os.mkdir(settings.output_dir)
         # Drik added 2 stop
@@ -217,8 +218,12 @@ if settings.qBittorrent['convert']:
                         log.exception("Error converting file %s." % inputfile)
                 else:
                     log.debug("Ignoring file %s." % inputfile)
-
-    path = converter.output_dir
+    # Drik mod
+    convert_folder = download_folder.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
+    settings.output_dir = convert_folder
+    converter = MkvtoMp4(settings)
+    path = convert_folder
+    # Drik mod
 else:
     suffix = "copy"
     # name = name[:260-len(suffix)]
