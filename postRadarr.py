@@ -31,12 +31,7 @@ log = logging.getLogger("RadarrPostConversion")
 
 log.info("Radarr extra script post processing started.")
 
-settings = ReadSettings(os.path.dirname(sys.argv[0]), "autoProcess.ini")
-# Drik add
-# Override force conversion so it won't fire up twice.
-settings.convert-mp4 = 'False'
-settings.force-convert = 'False'
-# Drik add
+settings = ReadSettings(os.path.dirname(sys.argv[0]), "autoProcessPost.ini")
 
 log.info(os.environ)
 
