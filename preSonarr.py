@@ -38,14 +38,14 @@ tvdb_id = int(os.environ.get('sonarr_series_tvdbid'))
 season = int(os.environ.get('sonarr_release_seasonnumber'))
 
 try:
-    episode = int(os.environ.get('sonarr_release_episodenumbers'))
+    episodes = [int(os.environ.get('sonarr_release_episodenumbers'))]
 except:
-    episode = int(os.environ.get('sonarr_release_episodenumbers').split(",")[0])
+    episode_list = os.environ.get('sonarr_release_episodenumbers').split(",")
+    episodes = [int(i) for i in episode_list]
 
 converter = MkvtoMp4(settings)
 
 log.debug("TVDB ID: %s." % tvdb_id)
-log.debug("Season: %s episode: %s." % (season, episode))
 
 # Update Sonarr to remove monitored status
 try:
@@ -98,30 +98,30 @@ try:
             attempts += 1
         log.info("Command completed")
         log.info(str(command))
+        for episode in episodes:
+            # Then get episode information
+            url = protocol + host + ":" + port + webroot + "/api/episode?seriesId=" + seriesID
+            log.info("Requesting updated episode information from Sonarr for series ID %s." % seriesID)
+            r = requests.get(url, headers=headers)
+            payload = r.json()
+            sonarrepinfo = None
+            for ep in payload:
+                if int(ep['episodeNumber']) == episode and int(ep['seasonNumber']) == season:
+                    sonarrepinfo = ep
+                    break
+            sonarrepinfo['monitored'] = False
 
-        # Then get episode information
-        url = protocol + host + ":" + port + webroot + "/api/episode?seriesId=" + seriesID
-        log.info("Requesting updated episode information from Sonarr for series ID %s." % seriesID)
-        r = requests.get(url, headers=headers)
-        payload = r.json()
-        sonarrepinfo = None
-        for ep in payload:
-            if int(ep['episodeNumber']) == episode and int(ep['seasonNumber']) == season:
-                sonarrepinfo = ep
-                break
-        sonarrepinfo['monitored'] = False
+            # Then set that episode to monitored
+            log.info("Sending PUT request with following payload:") # debug
+            log.info(str(sonarrepinfo)) # debug
 
-        # Then set that episode to monitored
-        log.info("Sending PUT request with following payload:") # debug
-        log.info(str(sonarrepinfo)) # debug
+            url = protocol + host + ":" + port + webroot + "/api/episode/" + str(sonarrepinfo['id'])
+            r = requests.put(url, json=sonarrepinfo, headers=headers)
+            success = r.json()
 
-        url = protocol + host + ":" + port + webroot + "/api/episode/" + str(sonarrepinfo['id'])
-        r = requests.put(url, json=sonarrepinfo, headers=headers)
-        success = r.json()
-
-        log.info("PUT request returned:") # debug
-        log.info(str(success)) # debug
-        log.info("Sonarr monitoring information updated for episode %s." % success['title'])
+            log.info("PUT request returned:") # debug
+            log.info(str(success)) # debug
+            log.info("Sonarr monitoring information updated for episode %s." % success['title'])
     else:
         log.error("Your Sonarr API Key can not be blank. Update autoProcess.ini.")
 except:
