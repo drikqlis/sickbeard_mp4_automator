@@ -608,6 +608,7 @@ class Ac3Codec(AudioCodec):
                 opt['channels'] = 6
         return super(Ac3Codec, self).parse_options(opt, stream)
 
+
 class EAc3Codec(AudioCodec):
     """
     Dolby Digital Plus/EAC3 audio codec.
@@ -663,6 +664,17 @@ class Mp2Codec(AudioCodec):
     ffmpeg_codec_name = 'mp2'
 
 
+class Opus(AudioCodec):
+    """
+    Opus audio codec
+    """
+    codec_name = 'opus'
+    ffmpeg_codec_name = 'libopus'
+
+    def _codec_specific_produce_ffmpeg_list(self, safe, stream=0):
+        return ['-strict', '-2']
+
+
 # Video Codecs
 class TheoraCodec(VideoCodec):
     """
@@ -693,8 +705,6 @@ class H264Codec(VideoCodec):
     encoder_options.update({
         'preset': str,  # common presets are ultrafast, superfast, veryfast,
         # faster, fast, medium(default), slow, slower, veryslow
-        'quality': int,  # constant rate factor, range:0(lossless)-51(worst)
-        # default:23, recommended: 18-28
         'profile': str,  # default: not-set, for valid values see above link
         'level': float,  # default: not-set, values range from 3.0 to 4.2
         'tune': str,  # default: not-set, for valid values see above link
@@ -719,8 +729,6 @@ class H264Codec(VideoCodec):
 
         if 'preset' in safe:
             optlist.extend(['-preset', safe['preset']])
-        if 'quality' in safe:
-            optlist.extend(['-crf', str(safe['quality'])])
         if 'profile' in safe:
             optlist.extend(['-profile:v', safe['profile']])
         if 'level' in safe:
@@ -797,8 +805,6 @@ class H265Codec(VideoCodec):
     encoder_options.update({
         'preset': str,  # common presets are ultrafast, superfast, veryfast,
         # faster, fast, medium(default), slow, slower, veryslow
-        'quality': int,  # constant rate factor, range:0(lossless)-51(worst)
-        # default:23, recommended: 18-28
         'profile': str,  # default: not-set, for valid values see above link
         'level': float,  # default: not-set, values range from 3.0 to 4.2
         'tune': str,  # default: not-set, for valid values see above link
@@ -820,8 +826,6 @@ class H265Codec(VideoCodec):
 
         if 'preset' in safe:
             optlist.extend(['-preset', safe['preset']])
-        if 'quality' in safe:
-            optlist.extend(['-crf', str(safe['quality'])])
         if 'profile' in safe:
             optlist.extend(['-profile:v', safe['profile']])
         if 'level' in safe:
@@ -1012,7 +1016,7 @@ class DVDSub(SubtitleCodec):
 
 audio_codec_list = [
     AudioNullCodec, AudioCopyCodec, VorbisCodec, AacCodec, Mp3Codec, Mp2Codec,
-    FdkAacCodec, FAacCodec, EAc3Codec, Ac3Codec, DtsCodec, FlacCodec
+    FdkAacCodec, FAacCodec, EAc3Codec, Ac3Codec, DtsCodec, FlacCodec, Opus
 ]
 
 video_codec_list = [
