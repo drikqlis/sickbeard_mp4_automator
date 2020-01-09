@@ -93,7 +93,7 @@ if settings.qBittorrent['convert']:
         log.debug("Overriding output_dir to %s." % settings.qBittorrent['output_dir'])
         # Drik added 2 start
 		# Setting output folder to separate sub folder
-        settings.output_dir = os.path.abspath(os.path.join(settings.output_dir, name))
+        settings.output_dir = root_path.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
         log.debug("Moving output_dir to separate folder %s." % settings.output_dir)
         download_folder = settings.output_dir
         if not os.path.exists(settings.output_dir):
