@@ -210,6 +210,9 @@ if settings.qBittorrent['convert']:
                             os.makedirs(settings.output_dir)
                         converter = MkvtoMp4(settings)
                         output = converter.process(inputfile)
+                        # QTFS
+                        if settings.relocate_moov:
+                            converter.QTFS(output['output'])
                         if output is not False:
                             ignore.append(output['output'])
                         else:
