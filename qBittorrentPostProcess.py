@@ -93,7 +93,10 @@ if settings.qBittorrent['convert']:
         log.debug("Overriding output_dir to %s." % settings.qBittorrent['output_dir'])
         # Drik added 2 start
 		# Setting output folder to separate sub folder
-        settings.output_dir = root_path.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
+        if single_file:
+            settings.output_dir = os.path.splitext(root_path.replace("/mnt/media/Pobrane","/mnt/media/Konwersja"))
+        else:
+            settings.output_dir = root_path.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
         log.debug("Moving output_dir to separate folder %s." % settings.output_dir)
         download_folder = settings.output_dir
         if not os.path.exists(settings.output_dir):
@@ -173,10 +176,6 @@ if settings.qBittorrent['convert']:
         if MkvtoMp4(settings).validSource(inputfile):
             log.info("Processing file %s." % inputfile)
             try:
-                settings.output_dir = os.path.dirname(os.path.abspath(inputfile))
-                settings.output_dir = settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
-                if not os.path.exists(settings.output_dir):
-                    os.makedirs(settings.output_dir)
                 converter = MkvtoMp4(settings)
                 output = converter.process(inputfile, reportProgress=True)
             except:
@@ -209,7 +208,7 @@ if settings.qBittorrent['convert']:
                         if not os.path.exists(settings.output_dir):
                             os.makedirs(settings.output_dir)
                         converter = MkvtoMp4(settings)
-                        output = converter.process(inputfile)
+                        output = converter.process(inputfile, reportProgress=True)
                         # QTFS
                         #if settings.relocate_moov:
                         #    converter.QTFS(output['output'])
