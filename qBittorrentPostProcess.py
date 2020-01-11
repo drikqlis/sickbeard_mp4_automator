@@ -7,6 +7,7 @@ import shutil
 # Drik added 1 start
 import hashlib
 import struct
+from joblib import Parallel, delayed
 # Drik added 1 end
 from autoprocess import autoProcessTV, autoProcessMovie, autoProcessTVSR, sonarr, radarr
 from readSettings import ReadSettings
@@ -158,6 +159,43 @@ if settings.qBittorrent['convert']:
         file.close()
         log.debug("Saved .openhash file in w %s." % filepath2)
         return returnedhash
+    def par_conv (files):
+        inputfile = os.path.join(r, files)
+        par_settings = settings
+        par_converter = converter
+        # Drik added 5 start
+        try:
+            if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
+                hash_napi_str = hash_napiprojekt(inputfile)
+        except:
+            log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
+        try:
+            if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
+                hash_open_str = hash_opensubtitles(inputfile)
+        except:
+            log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
+        # Drik added 5 stop
+        if MkvtoMp4(par_settings).validSource(inputfile) and inputfile not in ignore:
+            log.info("Processing file %s." % inputfile)
+            try:
+                par_settings.output_dir = os.path.dirname(os.path.abspath(inputfile))
+                par_settings.output_dir = par_settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
+                if not os.path.exists(par_settings.output_dir):
+                    os.makedirs(par_settings.output_dir)
+                par_converter = MkvtoMp4(par_settings)
+                output = par_converter.process(inputfile, reportProgress=True)
+                # QTFS
+                #if settings.relocate_moov:
+                #    converter.QTFS(output['output'])
+                if output is not False:
+                    ignore.append(output['output'])
+                else:
+                    log.error("Converting file failed %s." % inputfile)
+            except:
+                log.exception("Error converting file %s." % inputfile)
+        else:
+            log.debug("Ignoring file %s." % inputfile)
+        return None
     # Drik added 3 stop
 
     if single_file:
@@ -187,40 +225,8 @@ if settings.qBittorrent['convert']:
         log.debug("Processing multiple files.")
         ignore = []
         for r, d, f in os.walk(root_path):
-            for files in f:
-                inputfile = os.path.join(r, files)
-                # Drik added 5 start
-                try:
-                    if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
-                        hash_napi_str = hash_napiprojekt(inputfile)
-                except:
-                    log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
-                try:
-                    if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
-                        hash_open_str = hash_opensubtitles(inputfile)
-                except:
-                    log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
-                # Drik added 5 stop
-                if MkvtoMp4(settings).validSource(inputfile) and inputfile not in ignore:
-                    log.info("Processing file %s." % inputfile)
-                    try:
-                        settings.output_dir = os.path.dirname(os.path.abspath(inputfile))
-                        settings.output_dir = settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
-                        if not os.path.exists(settings.output_dir):
-                            os.makedirs(settings.output_dir)
-                        converter = MkvtoMp4(settings)
-                        output = converter.process(inputfile, reportProgress=True)
-                        # QTFS
-                        #if settings.relocate_moov:
-                        #    converter.QTFS(output['output'])
-                        if output is not False:
-                            ignore.append(output['output'])
-                        else:
-                            log.error("Converting file failed %s." % inputfile)
-                    except:
-                        log.exception("Error converting file %s." % inputfile)
-                else:
-                    log.debug("Ignoring file %s." % inputfile)
+            Parallel(n_jobs=10)(delayedpar_conv(files) for files in f)
+
     # Drik mod
     convert_folder = download_folder.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
     settings.output_dir = convert_folder
