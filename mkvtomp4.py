@@ -193,8 +193,8 @@ class MkvtoMp4:
 
     # Process a file from start to finish, with checking to make sure formats are compatible with selected settings
     def process(self, inputfile, reportProgress=False, original=None):
-        self.log = get_logger()
-        self.log.debug("Process started.")
+        par_log = get_logger()
+        par_log.debug("Process started.")
 
         delete = self.delete
         deleted = False
@@ -207,47 +207,47 @@ class MkvtoMp4:
 
             try:
                 if reportProgress:
-                    self.log.info(json.dumps(options, sort_keys=False, indent=4))
+                    par_log.info(json.dumps(options, sort_keys=False, indent=4))
                 else:
-                    self.log.debug(json.dumps(options, sort_keys=False, indent=4))
+                    par_log.debug(json.dumps(options, sort_keys=False, indent=4))
             except:
-                self.log.exception("Unable to log options.")
+                par_log.exception("Unable to log options.")
 
             outputfile, inputfile = self.convert(inputfile, options, reportProgress)
 
             if not outputfile:
-                self.log.debug("Error converting, no outputfile present.")
+                par_log.debug("Error converting, no outputfile present.")
                 return False
 
-            self.log.debug("%s created from %s successfully." % (outputfile, inputfile))
+            par_log.debug("%s created from %s successfully." % (outputfile, inputfile))
 
         else:
             outputfile = inputfile
             if self.output_dir is not None:
                 try:
                     outputfile = os.path.join(self.output_dir, os.path.split(inputfile)[1])
-                    self.log.debug("Outputfile set to %s." % outputfile)
+                    par_log.debug("Outputfile set to %s." % outputfile)
                     shutil.copy(inputfile, outputfile)
                 except Exception as e:
-                    self.log.exception("Error moving file to output directory.")
+                    par_log.exception("Error moving file to output directory.")
                     delete = False
             else:
                 delete = False
 
         if delete:
-            self.log.debug("Attempting to remove %s." % inputfile)
+            par_log.debug("Attempting to remove %s." % inputfile)
             if self.removeFile(inputfile):
-                self.log.debug("%s deleted." % inputfile)
+                par_log.debug("%s deleted." % inputfile)
                 deleted = True
             else:
-                self.log.error("Couldn't delete %s." % inputfile)
+                par_log.error("Couldn't delete %s." % inputfile)
         if self.downloadsubs:
             for subfile in self.deletesubs:
-                self.log.debug("Attempting to remove subtitle %s." % subfile)
+                par_log.debug("Attempting to remove subtitle %s." % subfile)
                 if self.removeFile(subfile):
-                    self.log.debug("Subtitle %s deleted." % subfile)
+                    par_log.debug("Subtitle %s deleted." % subfile)
                 else:
-                    self.log.debug("Unable to delete subtitle %s." % subfile)
+                    par_log.debug("Unable to delete subtitle %s." % subfile)
 
         dim = self.getDimensions(outputfile)
         input_extension = self.parseFile(inputfile)[2].lower()
