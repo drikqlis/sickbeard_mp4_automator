@@ -130,7 +130,9 @@ class MkvtoMp4:
             self.importSettings(settings)
         self.options = None
         self.deletesubs = set()
-
+    def get_logger():
+        log = logging.getLogger(__name__)
+        return log
     def importSettings(self, settings):
         self.FFMPEG_PATH = settings.ffmpeg
         self.FFPROBE_PATH = settings.ffprobe
@@ -191,7 +193,7 @@ class MkvtoMp4:
 
     # Process a file from start to finish, with checking to make sure formats are compatible with selected settings
     def process(self, inputfile, reportProgress=False, original=None):
-
+        self.log = get_logger()
         self.log.debug("Process started.")
 
         delete = self.delete
