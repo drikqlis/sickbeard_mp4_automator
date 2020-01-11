@@ -159,7 +159,11 @@ if settings.qBittorrent['convert']:
         file.close()
         log.debug("Saved .openhash file in w %s." % filepath2)
         return returnedhash
+    def get_logger():
+        log = logging.getLogger("qBittorrentPostProcess")
+        return log
     def par_conv (files):
+        log = get_logger()
         inputfile = os.path.join(r, files)
         par_settings = settings
         par_converter = converter
