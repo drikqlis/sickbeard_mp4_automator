@@ -191,7 +191,8 @@ class MkvtoMp4:
 
     # Process a file from start to finish, with checking to make sure formats are compatible with selected settings
     def process(self, inputfile, reportProgress=False, original=None):
-
+        import logging
+        from logging.config import fileConfig
         self.log.debug("Process started.")
 
         delete = self.delete
