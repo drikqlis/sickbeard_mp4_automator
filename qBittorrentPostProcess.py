@@ -95,9 +95,10 @@ if settings.qBittorrent['convert']:
 		# Setting output folder to separate sub folder
         if single_file:
             settings.output_dir = os.path.splitext(root_path.replace("/mnt/media/Pobrane","/mnt/media/Konwersja"))
+            settings.output_dir = settings.output_dir[0]
         else:
             settings.output_dir = root_path.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
-        log.debug("Moving output_dir to separate folder %s." % settings.output_dir)
+        log.info("Moving output_dir to separate folder %s." % settings.output_dir)
         download_folder = settings.output_dir
         if not os.path.exists(settings.output_dir):
             os.mkdir(settings.output_dir)
