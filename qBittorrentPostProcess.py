@@ -159,11 +159,7 @@ if settings.qBittorrent['convert']:
         file.close()
         log.debug("Saved .openhash file in w %s." % filepath2)
         return returnedhash
-    def get_logger():
-        log = logging.getLogger("qBittorrentPostProcess")
-        return log
     def par_conv (files):
-        par_log = get_logger()
         inputfile = os.path.join(r, files)
         par_settings = settings
         par_converter = converter
@@ -172,15 +168,15 @@ if settings.qBittorrent['convert']:
             if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
                 hash_napi_str = hash_napiprojekt(inputfile)
         except:
-            par_log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
+            log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
         try:
             if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
                 hash_open_str = hash_opensubtitles(inputfile)
         except:
-            par_log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
+            log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
         # Drik added 5 stop
         if MkvtoMp4(par_settings).validSource(inputfile) and inputfile not in ignore:
-            par_log.info("Processing file %s." % inputfile)
+            log.info("Processing file %s." % inputfile)
             try:
                 par_settings.output_dir = os.path.dirname(os.path.abspath(inputfile))
                 par_settings.output_dir = par_settings.output_dir.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
@@ -194,11 +190,11 @@ if settings.qBittorrent['convert']:
                 if output is not False:
                     ignore.append(output['output'])
                 else:
-                    par_log.error("Converting file failed %s." % inputfile)
+                    log.error("Converting file failed %s." % inputfile)
             except:
-                par_log.exception("Error converting file %s." % inputfile)
+                log.exception("Error converting file %s." % inputfile)
         else:
-            par_log.debug("Ignoring file %s." % inputfile)
+            log.debug("Ignoring file %s." % inputfile)
         return None
     # Drik added 3 stop
 
