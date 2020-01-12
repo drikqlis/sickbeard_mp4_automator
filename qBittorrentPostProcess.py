@@ -161,7 +161,7 @@ if settings.qBittorrent['convert']:
         return returnedhash
     def get_logger ():
         logging.root.handlers = []
-        logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, handlers=[logging.FileHandler("/var/log/sickbeard_mp4_automator/index.log"),logging.StreamHandler()])
+        logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, handlers=[logging.FileHandler("/var/log/sickbeard_mp4_automator/index.log", encoding="utf-8"),logging.StreamHandler()])
         log = logging.getLogger()
         return log
     def par_conv (files):
