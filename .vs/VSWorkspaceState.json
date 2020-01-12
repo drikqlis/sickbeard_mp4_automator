@@ -1,8 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\autoprocess"
+    ""
   ],
-  "SelectedNode": "\\qBittorrentPostProcess.py",
+  "SelectedNode": "\\postRadarr.py",
   "PreviewInSolutionExplorer": false
 }

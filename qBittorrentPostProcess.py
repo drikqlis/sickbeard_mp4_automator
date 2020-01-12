@@ -159,9 +159,13 @@ if settings.qBittorrent['convert']:
         file.close()
         log.debug("Saved .openhash file in w %s." % filepath2)
         return returnedhash
+    def get_logger ():
+        logging.root.handlers = []
+        logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, handlers=[logging.FileHandler("/var/log/sickbeard_mp4_automator/index.log"),logging.StreamHandler()])
+        log = logging.getLogger()
+        return log
     def par_conv (files):
-        import logging
-        from logging.config import fileConfig
+        log = get_logger()
         inputfile = os.path.join(r, files)
         par_settings = settings
         par_converter = converter
