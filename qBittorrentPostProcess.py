@@ -125,7 +125,10 @@ if settings.qBittorrent['convert']:
         hash = hashlib.md5(data).hexdigest()
         filename=os.path.splitext(os.path.basename(video_path))[0]
         dirpath=os.path.dirname(video_path)
-        filepath2 = os.path.abspath(os.path.join(settings.output_dir, filename + '.napihash'))
+        converspath = dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
+        if not os.path.exists(converspath):
+            os.makedirs(converspath)
+        filepath2 = os.path.abspath(os.path.join(converspath, filename + '.napihash'))
         file = open(filepath2, "w")
         file.write(hash)
         file.close()
@@ -153,7 +156,10 @@ if settings.qBittorrent['convert']:
         returnedhash = '%016x' % filehash
         filename=os.path.splitext(os.path.basename(video_path))[0]
         dirpath=os.path.dirname(video_path)
-        filepath2 = os.path.abspath(os.path.join(settings.output_dir, filename + '.openhash'))
+        converspath = dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
+        if not os.path.exists(converspath):
+            os.makedirs(converspath)
+        filepath2 = os.path.abspath(os.path.join(converspath, filename + '.openhash'))
         file = open(filepath2, "w")
         file.write(returnedhash + ";" + str(filesize))
         file.close()
@@ -169,18 +175,6 @@ if settings.qBittorrent['convert']:
         inputfile = os.path.join(r, files)
         par_settings = settings
         par_converter = converter
-        # Drik added 5 start
-        try:
-            if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
-                hash_napi_str = hash_napiprojekt(inputfile)
-        except:
-            log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
-        try:
-            if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
-                hash_open_str = hash_opensubtitles(inputfile)
-        except:
-            log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
-        # Drik added 5 stop
         if MkvtoMp4(par_settings).validSource(inputfile) and inputfile not in ignore:
             log.info("Processing file %s." % inputfile)
             try:
@@ -201,6 +195,18 @@ if settings.qBittorrent['convert']:
                 log.exception("Error converting file %s." % inputfile)
         else:
             log.debug("Ignoring file %s." % inputfile)
+        # Drik added 5 start
+        try:
+            if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
+                hash_napi_str = hash_napiprojekt(inputfile)
+        except:
+            log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
+        try:
+            if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
+                hash_open_str = hash_opensubtitles(inputfile)
+        except:
+            log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
+        # Drik added 5 stop
         return None
     # Drik added 3 stop
 
