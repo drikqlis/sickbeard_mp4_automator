@@ -91,10 +91,9 @@ try:
             period = 30
             mustend = time.time() + timeout
             while time.time() < mustend:
-                if torrent_prop[0].state not in ['checkingUP','missingFiles','error','allocating','downloading','metaDL','pausedDL','queuedDL','stalledDL','checkingDL','forceDL','checkingResumeData','moving','unknown']: return True
+                if torrent_prop[0].state not in ['checkingUP','missingFiles','error','allocating','downloading','metaDL','pausedDL','queuedDL','stalledDL','checkingDL','forceDL','checkingResumeData','moving','unknown']: break
                 log.info("File is still processed. Waiting.")
                 time.sleep(period)
-            return False
             qb.pause(torrent_hash)
                 
 except:
