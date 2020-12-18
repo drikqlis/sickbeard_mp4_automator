@@ -181,7 +181,7 @@ if settings.qBittorrent['convert']:
         inputfile = os.path.join(r, files)
         par_settings = settings
         par_converter = converter
-        single_file = false
+        single_file = 0
         # Drik added 5 start
         try:
             if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
