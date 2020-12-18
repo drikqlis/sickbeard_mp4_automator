@@ -86,13 +86,13 @@ try:
     if settings.qBittorrent['actionBefore']:
         if settings.qBittorrent['actionBefore'] == 'pause':  # currently only support pausing
             log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionBefore'])
-            for torrent in qb.torrents_info():
-                print(f'{torrent.hash[-6:]}: {torrent.name} ({torrent.state})')
+            import qbittorrentapi
+            qbt_client = qbittorrentapi.Client(host=settings.qBittorrent['host'], port=8080, username=settings.qBittorrent['username'], password=settings.qBittorrent['password'])
             timeout = 600
             period = 30
             mustend = time.time() + timeout
             while time.time() < mustend:
-                torrent_prop = qb.torrents.info(hashes=torrent_hash)
+                torrent_prop = qbt_client.torrents.info(hashes=torrent_hash)
                 if torrent_prop[0].state not in ['checkingUP','missingFiles','error','allocating','downloading','metaDL','pausedDL','queuedDL','stalledDL','checkingDL','forceDL','checkingResumeData','moving','unknown']: break
                 log.info("File is still processed. Waiting.")
                 time.sleep(period)
