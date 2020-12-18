@@ -237,7 +237,7 @@ if settings.qBittorrent['convert']:
         log.debug("Processing multiple files.")
         ignore = []
         for r, d, f in os.walk(root_path):
-            Parallel(n_jobs=5)(delayed (par_conv)(files) for files in f)
+            Parallel(n_jobs=1)(delayed (par_conv)(files) for files in f)
 
     # Drik mod
     convert_folder = download_folder.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
