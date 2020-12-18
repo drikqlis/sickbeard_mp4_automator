@@ -87,7 +87,7 @@ try:
         if settings.qBittorrent['actionBefore'] == 'pause':  # currently only support pausing
             log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionBefore'])
             for torrent in qb.torrents_info():
-            print(f'{torrent.hash[-6:]}: {torrent.name} ({torrent.state})')
+                print(f'{torrent.hash[-6:]}: {torrent.name} ({torrent.state})')
             timeout = 600
             period = 30
             mustend = time.time() + timeout
