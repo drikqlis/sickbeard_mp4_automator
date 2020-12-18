@@ -126,7 +126,7 @@ if settings.qBittorrent['convert']:
         filename=os.path.splitext(os.path.basename(video_path))[0]
         dirpath=os.path.dirname(video_path)
         if single_file:
-            converspath = os.path.abspath(os.path.join(dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja", filename))
+            converspath = os.path.abspath(os.path.join(dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja"), filename))
         else:
             converspath = dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
         if not os.path.exists(converspath):
@@ -160,7 +160,7 @@ if settings.qBittorrent['convert']:
         filename=os.path.splitext(os.path.basename(video_path))[0]
         dirpath=os.path.dirname(video_path)
         if single_file:
-            converspath = os.path.abspath(os.path.join(dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja", filename))
+            converspath = os.path.abspath(os.path.join(dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja"), filename))
         else:
             converspath = dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
         if not os.path.exists(converspath):
