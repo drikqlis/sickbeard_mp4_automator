@@ -67,6 +67,9 @@ if len(categories) != len(set(categories)):
     log.error("Duplicate category detected. Category names must be unique.")
     sys.exit()
 
+import time
+
+
 # Import python-qbittorrent
 try:
     from qbittorrent import Client
@@ -83,7 +86,17 @@ try:
     if settings.qBittorrent['actionBefore']:
         if settings.qBittorrent['actionBefore'] == 'pause':  # currently only support pausing
             log.debug("Sending action %s to qBittorrent" % settings.qBittorrent['actionBefore'])
+            torrent_prop = qb.info(hashes=torrent_hash)
+            timeout = 600
+            period = 30
+            mustend = time.time() + timeout
+            while time.time() < mustend:
+                if torrent_prop[0].state not in ['checkingUP','missingFiles','error','allocating','downloading','metaDL','pausedDL','queuedDL','stalledDL','checkingDL','forceDL','checkingResumeData','moving','unknown'] : Return True
+                log.info("File is still processed. Waiting.")
+                time.sleep(period)
+            return False
             qb.pause(torrent_hash)
+                
 except:
     log.exception("Failed to send qBittorrent before action.")
 
