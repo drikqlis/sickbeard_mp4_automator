@@ -126,18 +126,16 @@ if settings.qBittorrent['convert']:
         filename=os.path.splitext(os.path.basename(video_path))[0]
         dirpath=os.path.dirname(video_path)
         if single_file:
-            convdirpath = os.path.splitext(dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja"))
-            convdirpath = convdirpath[0]
+            converspath = os.path.abspath(os.path.join(dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja", filename))
         else:
-            convdirpath = dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
-        converspath = convdirpath
+            converspath = dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
         if not os.path.exists(converspath):
             os.makedirs(converspath)
         filepath2 = os.path.abspath(os.path.join(converspath, filename + '.napihash'))
         file = open(filepath2, "w")
         file.write(hash)
         file.close()
-        log.debug("Saved .napihash file in %s." % filepath2)
+        log.info("Saved .napihash file in %s." % filepath2)
         return hash
 	# Function for generating opensubtitles hash and saving to filename.openhash file
     def hash_opensubtitles(video_path, single_file):
@@ -162,18 +160,16 @@ if settings.qBittorrent['convert']:
         filename=os.path.splitext(os.path.basename(video_path))[0]
         dirpath=os.path.dirname(video_path)
         if single_file:
-            convdirpath = os.path.splitext(dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja"))
-            convdirpath = convdirpath[0]
+            converspath = os.path.abspath(os.path.join(dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja", filename))
         else:
-            convdirpath = dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
-        converspath = convdirpath
+            converspath = dirpath.replace("/mnt/media/Pobrane","/mnt/media/Konwersja")
         if not os.path.exists(converspath):
             os.makedirs(converspath)
         filepath2 = os.path.abspath(os.path.join(converspath, filename + '.openhash'))
         file = open(filepath2, "w")
         file.write(returnedhash + ";" + str(filesize))
         file.close()
-        log.debug("Saved .openhash file in w %s." % filepath2)
+        log.info("Saved .openhash file in w %s." % filepath2)
         return returnedhash
     def get_logger ():
         logging.root.handlers = []
@@ -185,6 +181,19 @@ if settings.qBittorrent['convert']:
         inputfile = os.path.join(r, files)
         par_settings = settings
         par_converter = converter
+        single_file = false
+        # Drik added 5 start
+        try:
+            if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
+                hash_napi_str = hash_napiprojekt(inputfile, single_file)
+        except:
+            log.warning(u"Couldn't compute napiprojekt hash for %s", inputfile)
+        try:
+            if inputfile.endswith(".mp4") or inputfile.endswith(".mkv") or inputfile.endswith(".avi"):
+                hash_open_str = hash_opensubtitles(inputfile, single_file)
+        except:
+            log.warning(u"Couldn't compute opensubtitles hash for %s", inputfile)
+        # Drik added 5 stop
         if MkvtoMp4(par_settings).validSource(inputfile) and inputfile not in ignore:
             log.info("Processing file %s." % inputfile)
             try:
